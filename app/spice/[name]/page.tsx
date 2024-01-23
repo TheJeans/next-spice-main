@@ -47,11 +47,19 @@ export default function SpiceDetailPage({
     }, [params.name]);
 
     if (isLoading) {
-        return <div>Loading spice details...</div>;
+        return (
+            <div role="status" aria-live="polite">
+                Loading spice details...
+            </div>
+        );
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return (
+            <div role="alert" aria-live="assertive">
+                Error: {error}
+            </div>
+        );
     }
 
     if (!spice) {
@@ -60,11 +68,23 @@ export default function SpiceDetailPage({
 
     return (
         <main className="p-24">
-            <h1>Spice Detail</h1>
-            <div>Name: {spice.name}</div>
-            <div>Price: {spice.price}</div>
-            <div>Heat: {spice.heat}</div>
-            <div>Color: {spice.color}</div>
+            <article>
+                <h1>Spice Detail: {spice.name}</h1>
+                <ul>
+                    <li>
+                        Name: {spice.name}
+                    </li>
+                    <li>
+                        Price: {spice.price}
+                    </li>
+                    <li>
+                        Heat Level: {spice.heat}
+                    </li>
+                    <li>
+                        Color: {spice.color}
+                    </li>
+                </ul>
+            </article>
         </main>
     );
 }

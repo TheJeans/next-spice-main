@@ -42,9 +42,8 @@ const Spices = () => {
         fetchData();
     }, []);
 
-    // TODO: better placeholder content
     if (isLoading) {
-        return <div>Loading spices and blends...</div>;
+        return <div role="status" aria-live="polite">Loading spices and blends...</div>;
     }
 
     return (

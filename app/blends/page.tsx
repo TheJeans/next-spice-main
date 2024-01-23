@@ -28,7 +28,7 @@ const Blends = () => {
 
     // TODO: better placeholder content
     if (isLoading) {
-        return <div>Loading blends and spices...</div>;
+        return <div role="status" aria-live="polite">Loading blends and spices...</div>;
     }
 
     return (
