@@ -1,5 +1,5 @@
 /* 
-Origionally:
+Before:
 - everything was a div lol
 - no loading function
 - no error handling
@@ -15,13 +15,15 @@ After:
 */
 
 "use client";
+import React, { useState, useEffect } from "react";
 import { fetchBlends, fetchSpices } from "@/data/api";
 import { Spice, Blend } from "@/types/interfaces";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import SearchComponent from "../../components/SearchComponent";
 
 const Spices = () => {
     const [spices, setSpices] = useState<Spice[]>([]);
+    const [filteredSpices, setFilteredSpices] = useState<Spice[]>([]);
     const [blends, setBlends] = useState<Blend[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -31,6 +33,7 @@ const Spices = () => {
                 const fetchedSpices = await fetchSpices();
                 const fetchedBlends = await fetchBlends();
                 setSpices(fetchedSpices);
+                setFilteredSpices(fetchedSpices);
                 setBlends(fetchedBlends);
             } catch (error) {
                 console.error("Failed to fetch spices or blends", error);
@@ -49,34 +52,27 @@ const Spices = () => {
     return (
         <main>
             <h1>Spice List</h1>
-            {spices.length > 0 ? (
-                <ul>
-                    {spices.map((spice) => (
+            <SearchComponent data={spices} onSearchResult={setFilteredSpices} />
+            <ul>
+                {filteredSpices.length > 0 ? (
+                    filteredSpices.map(spice => (
                         <li key={spice.name}>
-                            <Link
-                                href={`/spice/${encodeURIComponent(
-                                    spice.name
-                                )}`}
-                            >
+                            <Link href={`/spice/${encodeURIComponent(spice.name)}`}>
                                 {spice.name}
                             </Link>
                         </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No spices available.</p>
-            )}
+                    ))
+                ) : (
+                    <p>No matching spices found.</p>
+                )}
+            </ul>
 
             <h2>Related Blends</h2>
-            {blends.length > 0 ? (
-                <ul>
-                    {blends.map((blend) => (
-                        <li key={blend.name}>{blend.name}</li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No blends available.</p>
-            )}
+            <ul>
+                {blends.map(blend => (
+                    <li key={blend.name}>{blend.name}</li>
+                ))}
+            </ul>
         </main>
     );
 };
