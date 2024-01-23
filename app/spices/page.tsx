@@ -42,8 +42,9 @@ const Spices = () => {
         fetchData();
     }, []);
 
+    // TODO: better placeholder content
     if (isLoading) {
-        return <div>Loading spices and blends...</div>; // Placeholder content
+        return <div>Loading spices and blends...</div>;
     }
 
     return (
@@ -58,7 +59,7 @@ const Spices = () => {
                                     spice.name
                                 )}`}
                             >
-                                <a>{spice.name}</a>
+                                {spice.name}
                             </Link>
                         </li>
                     ))}
