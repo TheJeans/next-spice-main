@@ -1,32 +1,39 @@
-import spices from './spices'
-import blends from './blends'
+/* 
+Originally:
+- had no type enforcement or interfaces for spice and blend
+- the fetching had no specific return type
 
-export const fetchSpices = async () => {
-  const prom = new Promise((resolveOuter) => {
-    setTimeout(() => {
-      resolveOuter(spices)
-    }, 2000)
-  });
+After:
+- added interfaces for spice and blend
+- explicit return types on all the functions
 
-  return prom
-}
+- ! did not mess with the timeouts
+*/
 
-export const fetchBlends = async () => {
-  const prom = new Promise((resolveOuter) => {
-    setTimeout(() => {
-      resolveOuter(blends)
-    }, 2000)
-  });
+import spices from "./spices";
+import blends from "./blends";
+import { Spice, Blend } from '../types/interfaces'
 
-  return prom
-}
+export const fetchSpices = async (): Promise<Spice[]> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(spices);
+        }, 2000);
+    });
+};
 
-export const fetchSpice = async (name: string) => {
-  const prom = new Promise((resolveOuter) => {
-    setTimeout(() => {
-      resolveOuter(spices.find((spice) => spice.name === name))
-    }, 2000)
-  });
+export const fetchBlends = async (): Promise<Blend[]> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(blends);
+        }, 2000);
+    });
+};
 
-  return prom
-}
+export const fetchSpice = async (name: string): Promise<Spice | undefined> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(spices.find((spice) => spice.name === name));
+        }, 2000);
+    });
+};
