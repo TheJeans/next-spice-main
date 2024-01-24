@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import SearchComponent from "../../components/SearchComponent";
 
-
 const Blends = () => {
     const [spices, setSpices] = useState<Spice[]>([]);
     const [blends, setBlends] = useState<Blend[]>([]);
