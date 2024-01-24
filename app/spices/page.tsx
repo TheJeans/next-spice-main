@@ -1,70 +1,38 @@
-/* 
-Before:
-- everything was a div lol
-- no loading function
-- no error handling
-- no accessibilty or user experience considerations
-- no TS typing
-
-After:
-- semantic html
-- loading state
-- error handling
-- accessible experience and navigation
-- conditional rendering!
-*/
-
-"use client";
-import React, { useState, useEffect } from "react";
+"use server";
+import React from "react";
 import { fetchBlends, fetchSpices } from "@/data/api";
 import { Spice, Blend } from "@/types/interfaces";
 import Link from "next/link";
 import SearchComponent from "../../components/SearchComponent";
 
-const Spices = () => {
-    const [spices, setSpices] = useState<Spice[]>([]);
-    const [filteredSpices, setFilteredSpices] = useState<Spice[]>([]);
-    const [blends, setBlends] = useState<Blend[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+export default async function Spices() {
+    let spices: Spice[] = [];
+    let blends: Blend[] = [];
+    let error: string | null = null;
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const fetchedSpices = await fetchSpices();
-                const fetchedBlends = await fetchBlends();
-                setSpices(fetchedSpices);
-                setFilteredSpices(fetchedSpices);
-                setBlends(fetchedBlends);
-            } catch (error) {
-                console.error("Failed to fetch spices or blends", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    try {
+        spices = await fetchSpices();
+        blends = await fetchBlends();
+    } catch (e) {
+        console.error("Failed to fetch spices or blends", e);
+        error = e instanceof Error ? e.message : 'An unknown error occurred';
+    }
 
-        fetchData();
-    }, []);
-
-    if (isLoading) {
-        return <div role="status" aria-live="polite">Loading spices and blends...</div>;
+    if (error) {
+        return <div>Error loading spices and blends: {error}</div>;
     }
 
     return (
         <main>
             <h1>Spice List</h1>
-            <SearchComponent data={spices} onSearchResult={setFilteredSpices} />
             <ul>
-                {filteredSpices.length > 0 ? (
-                    filteredSpices.map(spice => (
-                        <li key={spice.name}>
-                            <Link href={`/spice/${encodeURIComponent(spice.name)}`}>
-                                {spice.name}
-                            </Link>
-                        </li>
-                    ))
-                ) : (
-                    <p>No matching spices found.</p>
-                )}
+                {spices.map(spice => (
+                    <li key={spice.name}>
+                        <Link href={`/spice/${encodeURIComponent(spice.name)}`}>
+                            {spice.name}
+                        </Link>
+                    </li>
+                ))}
             </ul>
 
             <h2>Related Blends</h2>
@@ -75,6 +43,4 @@ const Spices = () => {
             </ul>
         </main>
     );
-};
-
-export default Spices;
+}
