@@ -1,43 +1,27 @@
-"use client";
+"use server";
+import React from 'react';
 import { fetchSpice } from "@/data/api";
 import { Spice } from "@/types/interfaces";
 import Head from "next/head";
-import { useState, useEffect } from "react";
 import { WithContext, Article } from "schema-dts";
+import dynamic from 'next/dynamic';
 
-export default function SpiceDetailPage({
-    params,
-}: {
-    params: { name: string };
-}) {
-    const [spice, setSpice] = useState<Spice | null | undefined>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+interface Params {
+    name: string;
+}
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const fetchedSpice = await fetchSpice(
-                    decodeURIComponent(params.name)
-                );
-                setSpice(fetchedSpice);
-            } catch (err) {
-                console.error("Failed to fetch spice", err);
-                setError("Failed to load spice details.");
-            } finally {
-                setIsLoading(false);
-            }
-        };
+const ItemInfo = dynamic(() => import('@/components/ItemInfo'), { ssr: false });
 
-        fetchData();
-    }, [params.name]);
+export default async function SpiceDetailPage({ params }: { params: Params }) {
+    const { name } = params;
+    let spice: Spice | null | undefined;
+    let error: string | null = null;
 
-    if (isLoading) {
-        return (
-            <div role="status" aria-live="polite">
-                Loading spice details...
-            </div>
-        );
+    try {
+        spice = await fetchSpice(decodeURIComponent(name));
+    } catch (err) {
+        console.error("Failed to fetch spice", err);
+        error = "Failed to load spice details.";
     }
 
     if (error) {
@@ -65,27 +49,17 @@ export default function SpiceDetailPage({
     return (
         <>
             <Head>
-                <title>{spice ? `${spice.name} Details` : 'Loading...'}</title>
+                <title>{`${spice.name} Details`}</title>
                 <meta name="description" content={`Learn more about ${spice.name}, its color, heat level, and price.`} />
                 <meta property="og:title" content={`${spice.name} Details`} />
                 <meta property="og:description" content={`Detailed information about ${spice.name}.`} />
-            </Head>
-            <main className="p-24">
-                <article>
-                    <h1>Spice Detail: {spice.name}</h1>
-                    <ul>
-                        <li>Name: {spice.name}</li>
-                        <li>Price: {spice.price}</li>
-                        <li>Heat Level: {spice.heat}</li>
-                        <li>Color: {spice.color}</li>
-                    </ul>
-                </article>
-            </main>
-            {spiceStructuredData && (
+                {spiceStructuredData && (
                 <script type="application/ld+json">
                     {JSON.stringify(spiceStructuredData)}
                 </script>
             )}
+            </Head>
+            <ItemInfo item={spice} />
         </>
     );
 }

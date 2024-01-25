@@ -53,7 +53,7 @@ const SearchBlendsInput: React.FC<SearchBlendsInputProps> = ({ initialBlends }) 
                             >
                                 <div className="flex">
                                     <Link
-                                        href={`/spice/${encodeURIComponent(
+                                        href={`/blend/${encodeURIComponent(
                                             blend.name
                                         )}`}
                                         className="w-full h-full text-left text-xl font-semibold"
