@@ -1,17 +1,3 @@
-/* 
-Originally:
-- had no type enforcement or interfaces for spice and blend
-- the fetching had no specific return type
-
-After:
-- added interfaces for spice and blend
-- explicit return types on all the functions
-- added a individual blend fetch
-- added a way to fetch a spice by id
-
-- ! did not mess with the timeouts
-*/
-
 import spices from "./spices";
 import blends from "./blends";
 import { Spice, Blend } from '../types/interfaces'

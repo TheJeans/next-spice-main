@@ -1,21 +1,3 @@
-/* 
-Before:
-- was an async function which isn't standard
-- fetchSpice could return null or undefined and that wasn't handled
-- no loading state
-- no error handling
-- no semantic html 
-
-After:
-- semantic html
-- loading state
-- error handling
-- accessible experience
-- correct type handling for fetchSpice being null or undefined
-- json-ld structured data
-- 
-*/
-
 "use client";
 import { fetchSpice } from "@/data/api";
 import { Spice } from "@/types/interfaces";
