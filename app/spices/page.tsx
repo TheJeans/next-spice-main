@@ -31,8 +31,6 @@ export default async function SpicesPage() {
             "@type": "ListItem",
             position: index + 1,
             name: spice.name,
-            // If you have dedicated pages for each spice, you can add "url" here
-            // "url": `https://yourwebsite.com/spice/${encodeURIComponent(spice.name)}`
         })),
     };
 
