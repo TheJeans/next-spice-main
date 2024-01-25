@@ -1,68 +1,36 @@
-"use client";
-import { fetchBlends, fetchSpices } from "@/data/api";
-import { Spice, Blend } from "@/types/interfaces";
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import SearchComponent from "../../components/SearchComponent";
+"use server";
+import React from 'react';
+import dynamic from 'next/dynamic';
+import { fetchBlends } from "@/data/api";
+import { Blend } from "@/types/interfaces";
 
-const Blends = () => {
-    const [spices, setSpices] = useState<Spice[]>([]);
-    const [blends, setBlends] = useState<Blend[]>([]);
-    const [filteredBlends, setFilteredBlends] = useState<Blend[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+/* (Same information as in app/spices/page.tsx)
+Here I dynamically import the SearchInput component.
+This is for client-side interaction.
+But basically In this page, I'm fetching the initial list server-side.
+Then I'm passing that list to the SearchInput component.
+Then the SearchInput component is managing its own state and interactivity.
+Why?
+- SEO: I want the initial list to be available to crawlers.
+- Performance: SSR can improve the initial load time.
+- Reliability: I don't want to rely on client-side JS to fetch the initial list to avoid turned off JS or JS errors.
+*/
+const SearchBlendsInput = dynamic(() => import('@/components/SearchBlendsInput'), { ssr: false });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const fetchedSpices = await fetchSpices();
-                const fetchedBlends = await fetchBlends();
-                setSpices(fetchedSpices);
-                setBlends(fetchedBlends);
-                setFilteredBlends(fetchedBlends); // Initialize filtered blends with all blends
-            } catch (error) {
-                console.error("Failed to fetch spices or blends", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+export default async function BlendsPage() {
 
-        fetchData();
-    }, []);
-
-    if (isLoading) {
-        return <div role="status" aria-live="polite">Loading blends and spices...</div>;
-    }
+    // fetching the initial list server-side for SEO
+    const initialBlends: Blend[] = await fetchBlends(); 
 
     return (
-        <main>
-            <h1>Blend List</h1>
-            <SearchComponent data={blends} onSearchResult={setFilteredBlends} />
-            {filteredBlends.length > 0 ? (
-                <ul>
-                    {filteredBlends.map((blend) => (
-                        <li key={blend.name}>
-                            <Link href={`/blend/${encodeURIComponent(blend.name)}`}>
-                                {blend.name}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No blends available.</p>
-            )}
-
-            <h2>Related Spices</h2>
-            <ul>
-                {spices.map((spice) => (
-                    <li key={spice.name}>
-                        <Link href={`/spice/${encodeURIComponent(spice.name)}`}>
-                            {spice.name}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </main>
+        <section className="container mx-auto px-4 mb-10">
+            <div>
+                <h1 className="text-7xl mt-20 mb-10 font-bold">Blend List</h1>
+                <p className="max-w-4xl mb-14">
+                    Explore our extensive collection of spices and blends. Use the search feature to narrow down your choices!
+                </p>
+            </div>
+            <SearchBlendsInput initialBlends={initialBlends} />
+        </section>
     );
-};
-
-export default Blends;
+}
