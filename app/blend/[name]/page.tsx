@@ -1,80 +1,47 @@
-/* 
-Before:
-- not here!
-
-After:
-- semantic html
-- loading state
-- error handling
-- accessible experience and navigation
-- fetches spice name and link from API 
-- fetches related blends from API
-*/
-
-"use client";
+"use server";
+import React from "react";
 import { fetchBlend, fetchBlendById, fetchSpiceById } from "@/data/api";
 import { Blend, Spice } from "@/types/interfaces";
-import Link from "next/link";
-import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import Head from "next/head";
+import { Article, WithContext } from "schema-dts";
 
-export default function BlendDetailPage({
-    params,
-}: {
-    params: { name: string };
-}) {
-    const [blend, setBlend] = useState<Blend | null | undefined>(null);
-    const [relatedBlends, setRelatedBlends] = useState<Blend[]>([]);
-    const [spices, setSpices] = useState<Spice[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+interface Params {
+    name: string;
+}
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const fetchedBlend = await fetchBlend(
-                    decodeURIComponent(params.name)
+const BlendInfo = dynamic(() => import("@/components/BlendInfo"), {
+    ssr: false,
+});
+
+export default async function BlendDetailPage({ params }: { params: Params }) {
+    const { name } = params;
+    let blend: Blend | null | undefined;
+    let relatedBlends: Blend[] = [];
+    let spices: Spice[] = [];
+    let error: string | null = null;
+    try {
+        blend = await fetchBlend(decodeURIComponent(name));
+
+        if (blend) {
+            if (blend.spices) {
+                spices = await Promise.all(
+                    blend.spices.map((spiceId) => fetchSpiceById(spiceId))
+                ).then((results) =>
+                    results.filter((spice): spice is Spice => !!spice)
                 );
-                setBlend(fetchedBlend);
-
-                if (fetchedBlend && fetchedBlend.spices) {
-                    const spiceDetails = await Promise.all(
-                        fetchedBlend.spices.map((spiceId) =>
-                            fetchSpiceById(spiceId)
-                        )
-                    );
-                    setSpices(
-                        spiceDetails.filter((spice): spice is Spice => !!spice)
-                    );
-                }
-                if (fetchedBlend && fetchedBlend.blends) {
-                    const relatedBlendDetails = await Promise.all(
-                        fetchedBlend.blends.map((blendId) =>
-                            fetchBlendById(blendId)
-                        )
-                    );
-                    setRelatedBlends(
-                        relatedBlendDetails.filter(
-                            (blend): blend is Blend => !!blend
-                        )
-                    );
-                }
-            } catch (err) {
-                console.error("Failed to fetch blend", err);
-                setError("Failed to load blend details.");
-            } finally {
-                setIsLoading(false);
             }
-        };
-
-        fetchData();
-    }, [params.name]);
-
-    if (isLoading) {
-        return (
-            <div role="status" aria-live="polite">
-                Loading blend details...
-            </div>
-        );
+            if (blend.blends) {
+                relatedBlends = await Promise.all(
+                    blend.blends.map((blendId) => fetchBlendById(blendId))
+                ).then((results) =>
+                    results.filter((blend): blend is Blend => !!blend)
+                );
+            }
+        }
+    } catch (err) {
+        console.error("Failed to fetch blend", err);
+        error = "Failed to load blend details.";
     }
 
     if (error) {
@@ -89,40 +56,25 @@ export default function BlendDetailPage({
         return <div>No blend details available.</div>;
     }
 
+    const blendStructuredData: WithContext<Article> = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        name: blend.name,
+        description: `Learn about ${blend.name}, the spices that make it up and any related blends.`,
+        articleBody: `The ${blend.name} is ${blend.description}`,
+    };
     return (
-        <main>
-            <article>
-                <h1>{blend.name}</h1>
-                {blend.blends && blend.blends.length > 0 && (
-                    <>
-                        <p>Other Blends:</p>
-                        <ul aria-label="Other blends in this blend">
-                            {relatedBlends.map(relatedBlend => (
-                                <li key={relatedBlend.id}>
-                                    <Link href={`/blend/${encodeURIComponent(relatedBlend.name)}`}>
-                                        {relatedBlend.name}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </>
+        <>
+            <Head>
+                <title>{blend.name} - Blend Details</title>
+                <meta name="description" content={`Learn more about ${blend.name}, its spices, and related blends.`} />
+                {blendStructuredData && (
+                    <script type="application/ld+json">
+                        {JSON.stringify(blendStructuredData)}
+                    </script>
                 )}
-                <p>Spices in this Blend:</p>
-                <ul aria-label={`Spices in ${blend.name} blend`}>
-                    {spices.map((spice) => (
-                        <li key={spice.id}>
-                            <Link
-                                href={`/spice/${encodeURIComponent(
-                                    spice.name
-                                )}`}
-                            >
-                                {spice.name}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-                <p>Description: {blend.description}</p>
-            </article>
-        </main>
+            </Head>
+            <BlendInfo item={blend} spices={spices} blends={relatedBlends} />
+        </>
     );
 }

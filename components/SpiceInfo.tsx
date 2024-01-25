@@ -6,7 +6,7 @@ interface ItemInfoProps {
     item: Spice;
 }
 
-function ItemInfo({ item }: ItemInfoProps) {
+function SpiceInfo({ item }: ItemInfoProps) {
     const backgroundColor = `#${item.color}`;
 
   return (
@@ -49,4 +49,4 @@ function ItemInfo({ item }: ItemInfoProps) {
   )
 }
 
-export default ItemInfo
+export default SpiceInfo;

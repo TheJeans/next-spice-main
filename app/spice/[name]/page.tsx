@@ -1,16 +1,18 @@
 "use server";
-import React from 'react';
+import React from "react";
 import { fetchSpice } from "@/data/api";
 import { Spice } from "@/types/interfaces";
 import Head from "next/head";
 import { WithContext, Article } from "schema-dts";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
 interface Params {
     name: string;
 }
 
-const ItemInfo = dynamic(() => import('@/components/ItemInfo'), { ssr: false });
+const SpiceInfo = dynamic(() => import("@/components/SpiceInfo"), {
+    ssr: false,
+});
 
 export default async function SpiceDetailPage({ params }: { params: Params }) {
     const { name } = params;
@@ -49,17 +51,18 @@ export default async function SpiceDetailPage({ params }: { params: Params }) {
     return (
         <>
             <Head>
-                <title>{`${spice.name} Details`}</title>
-                <meta name="description" content={`Learn more about ${spice.name}, its color, heat level, and price.`} />
-                <meta property="og:title" content={`${spice.name} Details`} />
-                <meta property="og:description" content={`Detailed information about ${spice.name}.`} />
+                <title>{spice.name} - Spice Details</title>
+                <meta
+                    name="description"
+                    content={`Learn more about ${spice.name}, its color, heat level, and price.`}
+                />
                 {spiceStructuredData && (
-                <script type="application/ld+json">
-                    {JSON.stringify(spiceStructuredData)}
-                </script>
-            )}
+                    <script type="application/ld+json">
+                        {JSON.stringify(spiceStructuredData)}
+                    </script>
+                )}
             </Head>
-            <ItemInfo item={spice} />
+            <SpiceInfo item={spice} />
         </>
     );
 }
