@@ -21,8 +21,15 @@ const SearchInput = dynamic(() => import("../../components/SearchInput"), {
 });
 
 export default async function SpicesPage() {
-    // fetching the initial list server-side for SEO
-    const initialSpices: Spice[] = await fetchSpices();
+    let initialSpices: Spice[] = [];
+    let error: string | null = null;
+    
+    try {
+        // fetching the initial list server-side for SEO
+        initialSpices = await fetchSpices();
+    } catch (e) {
+        error = e instanceof Error ? e.message : 'Failed to load spices';
+    }
 
     const spicesStructuredData = {
         "@context": "https://schema.org",
@@ -56,7 +63,11 @@ export default async function SpicesPage() {
                         Use the search feature to narrow down your choices!
                     </p>
                 </div>
-                <SearchInput initialSpices={initialSpices} />
+                {error ? (
+                    <div>Error: {error}</div>
+                ) : (
+                    <SearchInput initialSpices={initialSpices} />
+                )}
             </section>
         </>
     );
