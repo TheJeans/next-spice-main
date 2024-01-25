@@ -22,7 +22,7 @@ export default async function SpicesPage() {
     const initialSpices: Spice[] = await fetchSpices(); 
 
     return (
-        <section className="container mx-auto px-4">
+        <section className="container mx-auto px-4 mb-10">
             <div>
                 <h1 className="text-7xl mt-20 mb-10 font-bold">Spice List</h1>
                 <p className="max-w-4xl mb-14">
