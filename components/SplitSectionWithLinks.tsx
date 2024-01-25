@@ -9,7 +9,7 @@ function SplitSectionWithLinks({}: Props) {
             <div className="flex flex-wrap -m-4">
                 <div className="w-full md:w-1/2 p-4 border-r border-gray-300">
                     <div className="py-32 px-8 text-center h-full">
-                        <Link href={"#"} className="text-2xl block">
+                        <Link href={"/spices"} className="text-2xl block">
                             Learn more about
                             <span className="block text-6xl font-bold">
                                 SPICES
@@ -20,7 +20,7 @@ function SplitSectionWithLinks({}: Props) {
 
                 <div className="w-full md:w-1/2 p-4">
                     <div className="py-32 px-8 text-center h-full">
-                        <Link href={"#"} className="text-2xl block">
+                        <Link href={"/blends"} className="text-2xl block">
                             Learn more about
                             <span className="block text-6xl font-bold">
                                 BLENDS

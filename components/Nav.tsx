@@ -11,11 +11,12 @@ type Props = {};
 function Nav({}: Props) {
     const [isOpen, setIsOpen] = useState(false);
 
+    // Toggles the mobile menu open/close state
     const toggleNavbar = () => {
         setIsOpen(!isOpen);
     };
 
-    // Disable scrolling when the mobile menu is open
+    // Disables scrolling when the mobile menu is open
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = "hidden";
@@ -23,7 +24,7 @@ function Nav({}: Props) {
             document.body.style.overflow = "auto";
         }
 
-        // Ensure scroll restoration when the menu is closed
+        // Ensures you can scroll again when the menu is closed
         return () => {
             document.body.style.overflow = "auto";
         };
@@ -31,14 +32,17 @@ function Nav({}: Props) {
 
     return (
         <section className="container mx-auto border-b-2 relative">
+            {/* Main nav bar */}
             <nav className="py-7 px-4" aria-label="Main navigation">
                 <div className="flex justify-between">
+                    {/* Site / Logo link */}
                     <Link
                         href="/"
                         className="text-2xl tracking-tight font-bold hover:text-opacity-80 transition duration-200"
                     >
                         Spiceé.
                     </Link>
+                    {/* Desktop nav links */}
                     <div className="hidden lg:flex gap-7">
                         <Link
                             href="/spices"
@@ -53,8 +57,9 @@ function Nav({}: Props) {
                             Blends
                         </Link>
                     </div>
+                    {/* Hamburger menu button for mobile */}
                     <button
-                        className={`navbar-burger xl:hidden ${
+                        className={`navbar-burger lg:hidden ${
                             isOpen ? "open" : ""
                         }`}
                         onClick={toggleNavbar}
@@ -68,9 +73,10 @@ function Nav({}: Props) {
                     </button>
                 </div>
             </nav>
+            {/* Mobile nav menu */}
             <div
                 id="mobile-menu"
-                className={`md:hidden fixed top-0 left-0 w-full bg-white z-50 transition-transform transform ${
+                className={`lg:hidden fixed top-0 left-0 w-full bg-white z-50 transition-transform transform ${
                     isOpen
                         ? "translate-y-0 transition duration-500"
                         : "-translate-y-full transition duration-500"
@@ -81,7 +87,7 @@ function Nav({}: Props) {
                 }}
             >
                 <div className="p-4 flex flex-col items-center justify-center">
-                    {/* Mobile navigation menu */}
+                    {/* Mobile nav links */}
                     <Link
                         href="/spices"
                         className="block text-7xl tracking-tight font-semibold hover:text-opacity-80 transition duration-200 py-20"

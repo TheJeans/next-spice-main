@@ -89,3 +89,5 @@ Excuse my informal speech and misspellings from this point on.
     - ANIMATIONS and transitions
         - I'm pretty confident in this and styling so honestly I put this last. I wanted to make sure
         that I learned and grew in a different area in this project and I definitely feel that I have.
+    - double check the responsiveness of everything. I know I've missed something.
+    - as always, accessibility first!
