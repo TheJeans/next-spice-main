@@ -30,10 +30,10 @@ function SpiceInfo({ item }: ItemInfoProps) {
                     voluptate.
                   </p>
                   <ul className='text-lg'>
-                    <li key={item.price}>
+                    <li key={item.price} data-testid="spice-price">
                         <span className='font-semibold'>Price:</span> {item.price}
                     </li>
-                    <li key={item.heat}>
+                    <li key={item.heat} data-testid="spice-heat">
                         <span className='font-semibold'>Heat Level:</span> {item.heat}
                     </li>
                   </ul>

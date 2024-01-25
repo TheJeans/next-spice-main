@@ -16,10 +16,16 @@ function BlendInfo({ item, spices, blends }: BlendInfoProps) {
                     <div className="flex flex-wrap mb-8 -mx-4">
                         <div className="w-full p-4">
                             <div className="">
-                                <h1 className="font-bold text-5xl mb-5 font-heading">
+                                <h1
+                                    className="font-bold text-5xl mb-5 font-heading"
+                                    data-testid="blend-name"
+                                >
                                     {item.name}
                                 </h1>
-                                <p className="mb-10 text-xl">
+                                <p
+                                    className="mb-10 text-xl"
+                                    data-testid="blend-description"
+                                >
                                     {item.description}
                                 </p>
                                 {item.spices.length > 0 && (
@@ -29,6 +35,7 @@ function BlendInfo({ item, spices, blends }: BlendInfoProps) {
                                         </h2>
                                         <ul
                                             aria-label={`Spices in ${item.name} blend`}
+                                            data-testid="blend-spices-list"
                                         >
                                             {spices.map((spice) => (
                                                 <li key={spice.id}>
@@ -43,7 +50,10 @@ function BlendInfo({ item, spices, blends }: BlendInfoProps) {
                                         <h2 className="text-3xl font-semibold">
                                             Other Blends:
                                         </h2>
-                                        <ul aria-label="Other blends">
+                                        <ul
+                                            aria-label="Other blends"
+                                            data-testid="other-blends-list"
+                                        >
                                             {blends.map((blend) => (
                                                 <li key={blend.id}>
                                                     {blend.name}
