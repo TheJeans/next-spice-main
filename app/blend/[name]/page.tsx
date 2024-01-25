@@ -63,11 +63,10 @@ export default async function BlendDetailPage({ params }: { params: Params }) {
         description: `Learn about ${blend.name}, the spices that make it up and any related blends.`,
         articleBody: `The ${blend.name} is ${blend.description}`,
     };
+    
     return (
         <>
             <Head>
-                <title>{blend.name} - Blend Details</title>
-                <meta name="description" content={`Learn more about ${blend.name}, its spices, and related blends.`} />
                 {blendStructuredData && (
                     <script type="application/ld+json">
                         {JSON.stringify(blendStructuredData)}
